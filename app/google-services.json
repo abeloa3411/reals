@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "55086570686",
+    "project_id": "reals-3f569",
+    "storage_bucket": "reals-3f569.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55086570686:android:685baeee0f22e40ba312ef",
+        "android_client_info": {
+          "package_name": "com.example.reals"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeaios_Or9VzBXULMNqk_zeqrnQvrR19g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
