@@ -1,6 +1,7 @@
 
 package com.example.reals
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.reals.databinding.ActivityMainBinding
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.bottom_menu_add_video -> {
-                    UiUtil.showToast(this, "Add video")
+                    startActivity(Intent(this, VideoUpload::class.java))
                 }
 
                 R.id.bottom_menu_profile -> {
