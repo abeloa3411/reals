@@ -14,7 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.reals.databinding.ActivityVideoUploadBinding
+import com.example.reals.model.VideoModel
 import com.example.reals.util.UiUtil
+import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 
 class VideoUpload : AppCompatActivity() {
 
@@ -47,7 +53,32 @@ class VideoUpload : AppCompatActivity() {
         setInProgress(true)
 
         selectedVideoUri?.apply {
+            val videoRef = FirebaseStorage.getInstance().reference.child("videos/" + this.lastPathSegment)
+            videoRef.putFile(this).addOnSuccessListener {
+                videoRef.downloadUrl.addOnSuccessListener {downloaduri ->
+                    postToFireStore(downloaduri.toString())
+                }
+            }
+        }
+    }
 
+
+    private fun postToFireStore(url: String){
+        val videoModel = VideoModel(
+            FirebaseAuth.getInstance().currentUser?.uid!! + "_" + Timestamp.now().toString(),
+            binding.postThumbnailInput.text.toString(),
+            url,
+            FirebaseAuth.getInstance().currentUser?.uid!!,
+            Timestamp.now()
+        )
+
+        Firebase.firestore.collection("videos").document(videoModel.videoId).set(videoModel).addOnSuccessListener {
+            setInProgress(false)
+            UiUtil.showToast(applicationContext, "video uploaded succesfully")
+            finish()
+        }.addOnFailureListener{
+            setInProgress(false)
+            UiUtil.showToast(applicationContext, "video failed to upload")
         }
     }
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VideoUpload">
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:layout_margin="10dp"
-            android:layout_toStartOf="@id/post_thumbnail_input"
+            android:layout_toStartOf="@id/post_thumbnail_view"
             android:id="@+id/post_thumbnail_input"
             android:gravity="top"
             android:padding="10dp"
@@ -37,7 +37,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:orientation="horizontal">
-            
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/add_icon"
-            android:src="@drawable/baseline_add_24" 
+            android:src="@drawable/baseline_add_24"
             app:tint="@color/black"
             android:layout_centerInParent="true"/>
         <TextView
