@@ -26,10 +26,10 @@ options: FirestoreRecyclerOptions<VideoModel>
                 //play pause
                 setOnClickListener{
                     if(isPlaying){
-                        pause()
+                        resume()
                         binding.pauseBtn.visibility = View.VISIBLE
                     }else{
-                        resume()
+                        start()
                         binding.pauseBtn.visibility = View.GONE
                     }
                 }
