@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.example.reals.databinding.ActivityVideoUploadBinding
 import com.example.reals.model.VideoModel
 import com.example.reals.util.UiUtil
@@ -43,6 +44,10 @@ class VideoUpload : AppCompatActivity() {
 
         binding.submitPostBtn.setOnClickListener{
             uploadVideo()
+        }
+
+        binding.cancelPostBtn.setOnClickListener{
+            finish()
         }
     }
 
@@ -93,8 +98,13 @@ class VideoUpload : AppCompatActivity() {
     }
 
     private fun showPostView(){
-        binding.postView.visibility = View.VISIBLE
-        binding.videoUpload.visibility = View.GONE
+
+        selectedVideoUri?.let{
+            binding.postView.visibility = View.VISIBLE
+            binding.videoUpload.visibility = View.GONE
+            Glide.with(binding.postThumbnailView).load(it).into(binding.postThumbnailView)
+        }
+
     }
 
     private fun checkPermissionAndOpenVideoPicker(){
