@@ -71,11 +71,11 @@ class ProfileActivity : AppCompatActivity() {
 
             if(profileUserModel.followersList.contains(currentUserId)){
                 profileUserModel.followersList.remove(currentUserId)
-                currentUserModel.followersList.remove(profileUserId)
+                currentUserModel.followingList.remove(profileUserId)
                 binding.profileBtn.text = "Follow"
             }else{
                 profileUserModel.followersList.add(currentUserId)
-                currentUserModel.followersList.add(profileUserId)
+                currentUserModel.followingList.add(profileUserId)
                 binding.profileBtn.text = "Unfollow"
             }
 
@@ -109,6 +109,8 @@ class ProfileActivity : AppCompatActivity() {
             Glide.with(binding.profilePic).load(profilePic).apply(
                 RequestOptions().placeholder(R.drawable.baseline_account_circle_24)
             ).circleCrop().into(binding.profilePic)
+            if (profileUserModel.followersList.contains(currentUserId))
+                binding.profileBtn.text = "Unfollow"
             binding.profileUsername.text = username
             binding.progressBar.visibility = View.INVISIBLE
             binding.followingCount.text = followingList.size.toString()
