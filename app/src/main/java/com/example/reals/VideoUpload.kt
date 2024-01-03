@@ -34,8 +34,10 @@ class VideoUpload : AppCompatActivity() {
         setContentView(binding.root)
 
         videoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
-            selectedVideoUri = result.data?.data
-            showPostView()
+            if(result.resultCode == RESULT_OK){
+                selectedVideoUri = result.data?.data
+                showPostView()
+            }
         }
 
         binding.addIcon.setOnClickListener{
@@ -108,19 +110,19 @@ class VideoUpload : AppCompatActivity() {
     }
 
     private fun checkPermissionAndOpenVideoPicker(){
-        var readExternalVide0 : String=""
+        var readExternalVideo : String=""
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            readExternalVide0 = android.Manifest.permission.READ_MEDIA_VIDEO
+            readExternalVideo = android.Manifest.permission.READ_MEDIA_VIDEO
         }else{
-            readExternalVide0 = android.Manifest.permission.READ_EXTERNAL_STORAGE
+            readExternalVideo = android.Manifest.permission.READ_EXTERNAL_STORAGE
         }
 
-        if(ContextCompat.checkSelfPermission(this, readExternalVide0) == PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(this, readExternalVideo) == PackageManager.PERMISSION_GRANTED){
             openVideoPicker()
         }else{
             ActivityCompat.requestPermissions(
-                this, arrayOf(readExternalVide0),100
+                this, arrayOf(readExternalVideo),100
             )
         }
 
