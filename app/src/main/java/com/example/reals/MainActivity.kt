@@ -26,10 +26,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavBar.setOnItemSelectedListener { menuItem ->
 
             when(menuItem.itemId){
-                R.id.bottom_menu_home -> {
-                    UiUtil.showToast(this, "home")
-                }
-
                 R.id.bottom_menu_add_video -> {
                     startActivity(Intent(this, VideoUpload::class.java))
                 }
@@ -38,6 +34,14 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, ProfileActivity::class.java)
                     intent.putExtra("profile_user_id", FirebaseAuth.getInstance().currentUser?.uid)
                     startActivity(intent)
+                }
+
+                R.id.bottom_menu_inbox -> {
+                    UiUtil.showToast(this, "Inbox coming soon, Thanks for your patience")
+                }
+
+                R.id.bottom_menu_search -> {
+                    UiUtil.showToast(this, "Search coming soon, Thanks for your patience")
                 }
             }
 
