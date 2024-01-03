@@ -2,6 +2,7 @@ package com.example.reals
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,7 @@ import com.example.reals.model.UserModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -38,6 +40,7 @@ class ProfileActivity : AppCompatActivity() {
         photoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
         if(result.resultCode == RESULT_OK){
              //upload photo
+            uploadToFirestore(result.data?.data!!)
             }
         }
 
@@ -52,10 +55,39 @@ class ProfileActivity : AppCompatActivity() {
             }
         }else{
             //other user profiles
+            binding.profileBtn.text = "Folllow"
+            binding.profileBtn.setOnClickListener {
+                followUnfollow()
+            }
         }
 
         getProfileDataFromFirebase()
 
+    }
+
+    private fun followUnfollow(){
+        Firebase.firestore.collection("users").document(currentUserId).get().addOnSuccessListener {
+            val currentUserModel = it.toObject(UserModel::class.java)!!
+
+            if(profileUserModel.followersList.contains(currentUserId)){
+                profileUserModel.followersList.remove(currentUserId)
+                currentUserModel.followersList.remove(profileUserId)
+                binding.profileBtn.text = "Follow"
+            }else{
+                profileUserModel.followersList.add(currentUserId)
+                currentUserModel.followersList.add(profileUserId)
+                binding.profileBtn.text = "Unfollow"
+            }
+
+            updateUserData(currentUserModel)
+            updateUserData(profileUserModel)
+        }
+    }
+
+    private fun updateUserData(model:UserModel){
+        Firebase.firestore.collection("users").document(model.id).set(model).addOnSuccessListener {
+            getProfileDataFromFirebase()
+        }
     }
 
     private fun logout(){
@@ -76,7 +108,7 @@ class ProfileActivity : AppCompatActivity() {
         profileUserModel?.apply {
             Glide.with(binding.profilePic).load(profilePic).apply(
                 RequestOptions().placeholder(R.drawable.baseline_account_circle_24)
-            ).into(binding.profilePic)
+            ).circleCrop().into(binding.profilePic)
             binding.profileUsername.text = username
             binding.progressBar.visibility = View.INVISIBLE
             binding.followingCount.text = followingList.size.toString()
@@ -110,5 +142,21 @@ class ProfileActivity : AppCompatActivity() {
         var intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         photoLauncher.launch(intent)
+    }
+
+    private fun uploadToFirestore(photoUri: Uri){
+        binding.progressBar.visibility = View.VISIBLE
+        val photoRef = FirebaseStorage.getInstance().reference.child("profilePic/" + currentUserId)
+        photoRef.putFile(photoUri).addOnSuccessListener {
+            photoRef.downloadUrl.addOnSuccessListener {downloaduri ->
+                postToFireStore(downloaduri.toString())
+            }
+        }
+    }
+
+    private fun postToFireStore(url: String){
+        Firebase.firestore.collection("users").document(currentUserId).update("profilePic", url).addOnSuccessListener {
+            getProfileDataFromFirebase()
+        }
     }
 }

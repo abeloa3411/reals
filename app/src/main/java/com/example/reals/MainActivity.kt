@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        adapter.notifyDataSetChanged()
         adapter.startListening()
     }
 

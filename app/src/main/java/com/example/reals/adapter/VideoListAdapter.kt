@@ -1,11 +1,13 @@
 package com.example.reals.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.reals.ProfileActivity
 import com.example.reals.R
 import com.example.reals.databinding.VideoItemRowBinding
 import com.example.reals.model.UserModel
@@ -13,6 +15,7 @@ import com.example.reals.model.VideoModel
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 
 class VideoListAdapter(
@@ -32,6 +35,12 @@ options: FirestoreRecyclerOptions<VideoModel>
                     Glide.with(binding.profileIcon).load(profilePic).circleCrop().apply(
                         RequestOptions().placeholder(R.drawable.baseline_person_24)
                     ).into(binding.profileIcon)
+
+                    binding.userDetailLayout.setOnClickListener{
+                        val intent = Intent(binding.userDetailLayout.context, ProfileActivity::class.java)
+                        intent.putExtra("profile_user_id", id)
+                        binding.userDetailLayout.context.startActivity(intent)
+                    }
                 }
             }
 

@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center"
+        android:id="@+id/user_detail_layout"
         android:layout_margin="16dp">
 
         <ImageView
