@@ -49,22 +49,22 @@ class SignupActivity : AppCompatActivity() {
         val confirmPassword = binding.cornfirmInput.text.toString()
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            binding.emailInput.setError("Invalid Email")
+            binding.emailInput.error = "Invalid Email"
             return
         }
 
         if (password.length < 6){
-            binding.passwordInput.setError("Minimum 6 Characters")
+            binding.passwordInput.error = "Minimum 6 Characters"
         }
 
         if(confirmPassword != password){
-            binding.cornfirmInput.setError("Password does not match")
+            binding.cornfirmInput.error = "Password does not match"
         }
 
         signupWithFirebase(email, password)
     }
 
-    fun signupWithFirebase(email :String, password:String){
+    private fun signupWithFirebase(email :String, password:String){
         setInProgress(true)
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnSuccessListener {
