@@ -2,7 +2,6 @@ package com.example.reals
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import com.example.reals.adapter.VideoListAdapter
 import com.example.reals.databinding.ActivitySingleVideoPlayerBinding
 import com.example.reals.model.VideoModel
@@ -12,9 +11,9 @@ import com.google.firebase.firestore.firestore
 
 class SingleVideoPlayerActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySingleVideoPlayerBinding
-    lateinit var videoId : String
-    lateinit var adapter:VideoListAdapter
+    private lateinit var binding: ActivitySingleVideoPlayerBinding
+    private lateinit var videoId : String
+    private lateinit var adapter:VideoListAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingleVideoPlayerBinding.inflate(layoutInflater)

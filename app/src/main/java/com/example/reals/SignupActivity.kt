@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
-import android.widget.Toast
 import com.example.reals.databinding.ActivitySignupBinding
 import com.example.reals.model.UserModel
 import com.example.reals.util.UiUtil
@@ -15,7 +14,7 @@ import com.google.firebase.firestore.firestore
 
 class SignupActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySignupBinding
+    private lateinit var binding: ActivitySignupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
-    fun setInProgress(boolean:Boolean){
+    private fun setInProgress(boolean:Boolean){
         if(boolean){
             binding.progressBar.visibility = View.VISIBLE
             binding.signupButton.visibility = View.GONE
@@ -43,7 +42,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    fun signup(){
+    private fun signup(){
         val email = binding.emailInput.text.toString()
         val password = binding.passwordInput.text.toString()
         val confirmPassword = binding.cornfirmInput.text.toString()
@@ -71,7 +70,7 @@ class SignupActivity : AppCompatActivity() {
             it.user?.let{user ->
                 val userModel = UserModel(user.uid,email,email.substringBefore("@"))
                 Firebase.firestore.collection("users").document(user.uid).set(userModel).addOnSuccessListener {
-                    UiUtil.showToast(applicationContext, "Account created succesfully")
+                    UiUtil.showToast(applicationContext, "Account created successfully")
                     setInProgress(false)
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()

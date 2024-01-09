@@ -15,8 +15,8 @@ import com.google.firebase.firestore.firestore
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivityMainBinding
-    lateinit var adapter: VideoListAdapter
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var adapter: VideoListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

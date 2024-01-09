@@ -55,7 +55,7 @@ class VideoUpload : AppCompatActivity() {
 
     private fun uploadVideo(){
         if(binding.postThumbnailInput.text.toString().isEmpty()){
-            binding.postThumbnailInput.setError("Enter caption")
+            binding.postThumbnailInput.error = "Enter caption"
         }
         setInProgress(true)
 
@@ -81,7 +81,7 @@ class VideoUpload : AppCompatActivity() {
 
         Firebase.firestore.collection("videos").document(videoModel.videoId).set(videoModel).addOnSuccessListener {
             setInProgress(false)
-            UiUtil.showToast(applicationContext, "video uploaded succesfully")
+            UiUtil.showToast(applicationContext, "video uploaded successfully")
             finish()
         }.addOnFailureListener{
             setInProgress(false)
