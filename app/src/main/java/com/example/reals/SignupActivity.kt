@@ -21,62 +21,64 @@ class SignupActivity : AppCompatActivity() {
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.signupButton.setOnClickListener{
+        binding.signupButton.setOnClickListener {
             signup()
         }
 
-        binding.goToLoginBtn.setOnClickListener{
+        binding.goToLoginBtn.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
     }
 
-    private fun setInProgress(boolean:Boolean){
-        if(boolean){
+    private fun setInProgress(boolean: Boolean) {
+        if (boolean) {
             binding.progressBar.visibility = View.VISIBLE
             binding.signupButton.visibility = View.GONE
-        }else{
+        } else {
             binding.progressBar.visibility = View.GONE
             binding.signupButton.visibility = View.VISIBLE
         }
     }
 
-    private fun signup(){
+    private fun signup() {
         val email = binding.emailInput.text.toString()
         val password = binding.passwordInput.text.toString()
         val confirmPassword = binding.cornfirmInput.text.toString()
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.emailInput.error = "Invalid Email"
             return
         }
 
-        if (password.length < 6){
+        if (password.length < 6) {
             binding.passwordInput.error = "Minimum 6 Characters"
         }
 
-        if(confirmPassword != password){
+        if (confirmPassword != password) {
             binding.cornfirmInput.error = "Password does not match"
         }
 
         signupWithFirebase(email, password)
     }
 
-    private fun signupWithFirebase(email :String, password:String){
+    private fun signupWithFirebase(email: String, password: String) {
         setInProgress(true)
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnSuccessListener {
-            it.user?.let{user ->
-                val userModel = UserModel(user.uid,email,email.substringBefore("@"))
-                Firebase.firestore.collection("users").document(user.uid).set(userModel).addOnSuccessListener {
-                    UiUtil.showToast(applicationContext, "Account created successfully")
-                    setInProgress(false)
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                it.user?.let { user ->
+                    val userModel = UserModel(user.uid, email, email.substringBefore("@"))
+                    Firebase.firestore.collection("users").document(user.uid).set(userModel)
+                        .addOnSuccessListener {
+                            UiUtil.showToast(applicationContext, "Account created successfully")
+                            setInProgress(false)
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
                 }
-            }
-        }.addOnFailureListener {
+            }.addOnFailureListener {
             UiUtil.showToast(applicationContext, "Something went wrong")
             setInProgress(false)
         }

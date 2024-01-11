@@ -25,44 +25,46 @@ import com.google.firebase.storage.FirebaseStorage
 
 class VideoUpload : AppCompatActivity() {
 
-    lateinit var binding:ActivityVideoUploadBinding
-    private var selectedVideoUri:Uri? = null
-    lateinit var videoLauncher:ActivityResultLauncher<Intent>
+    lateinit var binding: ActivityVideoUploadBinding
+    private var selectedVideoUri: Uri? = null
+    lateinit var videoLauncher: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVideoUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        videoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result->
-            if(result.resultCode == RESULT_OK){
-                selectedVideoUri = result.data?.data
-                showPostView()
+        videoLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    selectedVideoUri = result.data?.data
+                    showPostView()
+                }
             }
-        }
 
-        binding.addIcon.setOnClickListener{
+        binding.addIcon.setOnClickListener {
             checkPermissionAndOpenVideoPicker()
         }
 
-        binding.submitPostBtn.setOnClickListener{
+        binding.submitPostBtn.setOnClickListener {
             uploadVideo()
         }
 
-        binding.cancelPostBtn.setOnClickListener{
+        binding.cancelPostBtn.setOnClickListener {
             finish()
         }
     }
 
-    private fun uploadVideo(){
-        if(binding.postThumbnailInput.text.toString().isEmpty()){
+    private fun uploadVideo() {
+        if (binding.postThumbnailInput.text.toString().isEmpty()) {
             binding.postThumbnailInput.error = "Enter caption"
         }
         setInProgress(true)
 
         selectedVideoUri?.apply {
-            val videoRef = FirebaseStorage.getInstance().reference.child("videos/" + this.lastPathSegment)
+            val videoRef =
+                FirebaseStorage.getInstance().reference.child("videos/" + this.lastPathSegment)
             videoRef.putFile(this).addOnSuccessListener {
-                videoRef.downloadUrl.addOnSuccessListener {downloaduri ->
+                videoRef.downloadUrl.addOnSuccessListener { downloaduri ->
                     postToFireStore(downloaduri.toString())
                 }
             }
@@ -70,7 +72,7 @@ class VideoUpload : AppCompatActivity() {
     }
 
 
-    private fun postToFireStore(url: String){
+    private fun postToFireStore(url: String) {
         val videoModel = VideoModel(
             FirebaseAuth.getInstance().currentUser?.uid!! + "_" + Timestamp.now().toString(),
             binding.postThumbnailInput.text.toString(),
@@ -79,29 +81,30 @@ class VideoUpload : AppCompatActivity() {
             Timestamp.now()
         )
 
-        Firebase.firestore.collection("videos").document(videoModel.videoId).set(videoModel).addOnSuccessListener {
-            setInProgress(false)
-            UiUtil.showToast(applicationContext, "video uploaded successfully")
-            finish()
-        }.addOnFailureListener{
-            setInProgress(false)
-            UiUtil.showToast(applicationContext, "video failed to upload")
-        }
+        Firebase.firestore.collection("videos").document(videoModel.videoId).set(videoModel)
+            .addOnSuccessListener {
+                setInProgress(false)
+                UiUtil.showToast(applicationContext, "video uploaded successfully")
+                finish()
+            }.addOnFailureListener {
+                setInProgress(false)
+                UiUtil.showToast(applicationContext, "video failed to upload")
+            }
     }
 
-    private fun setInProgress(boolean:Boolean){
-        if(boolean){
+    private fun setInProgress(boolean: Boolean) {
+        if (boolean) {
             binding.progressBar.visibility = View.VISIBLE
             binding.submitPostBtn.visibility = View.GONE
-        }else{
+        } else {
             binding.progressBar.visibility = View.GONE
             binding.submitPostBtn.visibility = View.VISIBLE
         }
     }
 
-    private fun showPostView(){
+    private fun showPostView() {
 
-        selectedVideoUri?.let{
+        selectedVideoUri?.let {
             binding.postView.visibility = View.VISIBLE
             binding.videoUpload.visibility = View.GONE
             Glide.with(binding.postThumbnailView).load(it).into(binding.postThumbnailView)
@@ -109,27 +112,31 @@ class VideoUpload : AppCompatActivity() {
 
     }
 
-    private fun checkPermissionAndOpenVideoPicker(){
-        var readExternalVideo : String=""
+    private fun checkPermissionAndOpenVideoPicker() {
+        var readExternalVideo: String = ""
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             readExternalVideo = android.Manifest.permission.READ_MEDIA_VIDEO
-        }else{
+        } else {
             readExternalVideo = android.Manifest.permission.READ_EXTERNAL_STORAGE
         }
 
-        if(ContextCompat.checkSelfPermission(this, readExternalVideo) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(
+                this,
+                readExternalVideo
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             openVideoPicker()
-        }else{
+        } else {
             ActivityCompat.requestPermissions(
-                this, arrayOf(readExternalVideo),100
+                this, arrayOf(readExternalVideo), 100
             )
         }
 
     }
 
-    private fun openVideoPicker(){
-    var intent = Intent(Intent.ACTION_PICK,MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+    private fun openVideoPicker() {
+        var intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
         intent.type = "video/*"
         videoLauncher.launch(intent)
     }
